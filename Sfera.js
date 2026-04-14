@@ -8,11 +8,11 @@ const center = {x: 300,y: 300};
 const lati = 8; //mi serve un cubo
 const rotation = 0;
 
-var dimension = canvas.height/2; 
+var dimension = canvas.height/100 * 75; 
 var raggio = dimension / 2;
 var h = 0.5;
 var distance = {x: canvas.height/2, y: canvas.height/2, z: canvas.height/2};
-var subdivision = 4;
+var subdivision = 2;
 //=====================================================================================
 const vertices = [
     {x: -h, y:  h, z: h},
@@ -91,11 +91,11 @@ function disegna(x, y, z){
     rotateZ(mesh, z);  
     
     scaled = scala(mesh, dimension);
-    moved = move(scaled, distance.x, distance.y, distance.z);
 
     SpherePoints.length = 0;
     SphereSpigoli.length = 0;
-    CreaSfera(moved);
+    rounded = CreaSfera(scaled);
+    move(rounded, 300, 300, 300);
 
     ctx.moveTo(SpherePoints[0].x, SpherePoints[0].y); //setup inizio della forma
     SphereSpigoli.forEach(([a,b]) => {
@@ -125,16 +125,11 @@ function PuntoMediano(a, b, t){
     };
 }
 function NormalizzaASfera(punto, raggio, centro){
-    
-    const dx = punto.x - centro.x;
-    const dy = punto.y - centro.y;
-    const dz = punto.z - centro.z;
-
-    const distanza = Math.sqrt(dx*dx + dy*dy + dz*dz); //Calcolo la distanza del punto dal centro
+        const distanza = Math.sqrt(punto.x*punto.x + punto.y*punto.y + punto.z*punto.z); //Calcolo la distanza del punto dal centro
     return {
-        x: ((punto.x / distanza) * raggio), 
-        y: ((punto.y / distanza) * raggio),
-        z: ((punto.z / distanza) * raggio)
+        x: ((punto.x / distanza) * raggio + distance.x), 
+        y: ((punto.y / distanza) * raggio + distance.y),
+        z: ((punto.z / distanza) * raggio + distance.z)
     }
 }
 
@@ -144,6 +139,7 @@ function CreaSfera (mesh){
         y: mesh.reduce((s, v) => s + v.y, 0) / mesh.length,
         z: mesh.reduce((s, v) => s + v.z, 0) / mesh.length
     };
+
     for (const [a, b] of spigoli){
         const primo = mesh[a];
         const secondo = mesh[b];
@@ -163,5 +159,6 @@ function CreaSfera (mesh){
             SphereSpigoli.push([p1, p2]);
         }
         IndiceIniziale += subdivision + 1;
-    }    
+    }
+    return mesh;
 }
