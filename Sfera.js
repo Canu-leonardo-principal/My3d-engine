@@ -12,7 +12,7 @@ var dimension = canvas.height/100 * 75;
 var raggio = dimension / 2;
 var h = 0.5;
 var distance = {x: canvas.height/2, y: canvas.height/2, z: canvas.height/2};
-var subdivision = 2;
+var subdivision = 9;
 //=====================================================================================
 const vertices = [
     {x: -h, y:  h, z: h},
@@ -24,14 +24,23 @@ const vertices = [
     {x:  h, y: -h, z: -h},
     {x:  h, y:  h, z: -h},
 ];
-const SpherePoints = [];
 const spigoli = [
   [0,1],[1,2],[2,3],[3,0], // front
   [4,5],[5,7],[7,6],[6,4], // back
   [0,5],[1,4],[2,6],[3,7]  // connections
 ];
+const facce = [
+  [0,1,2,3], // front
+  [4,5,7,6], // back
+  [0,5,4,1], // left
+  [3,2,6,7], // right
+  [0,3,7,5], // top
+  [1,4,6,2]  // bottom
+];
+const SpherePoints = [];
 const SphereSpigoli = [];
 //=====================================================================================
+//SETUP MESH
 function scala(m, x){
     m.forEach(point => {
         point.x = point.x * x;
@@ -49,6 +58,7 @@ function move(m, x, y, z){
     return m;
 }
 //=====================================================================================
+//ROTAZIONI
 function rotateX(m, x){
     var phi = x * 0.01745329;
     m.forEach(point => {
@@ -77,35 +87,6 @@ function rotateZ(m, z){
         point.y = (Math.sin(phi) * x) + (Math.cos(phi) * y);
     }); 
 }
-//=====================================================================================
-disegna(0, 0, 0);
-//=====================================================================================
-function disegna(x, y, z){
-    
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath();
-
-    var mesh = vertices.map(v => ({...v}));
-    rotateY(mesh, y);
-    rotateX(mesh, x);
-    rotateZ(mesh, z);  
-    
-    scaled = scala(mesh, dimension);
-
-    SpherePoints.length = 0;
-    SphereSpigoli.length = 0;
-    rounded = CreaSfera(scaled);
-    move(rounded, 300, 300, 300);
-
-    ctx.moveTo(SpherePoints[0].x, SpherePoints[0].y); //setup inizio della forma
-    SphereSpigoli.forEach(([a,b]) => {
-        ctx.moveTo(SpherePoints[a].x, SpherePoints[a].y);
-        ctx.lineTo(SpherePoints[b].x, SpherePoints[b].y);
-    });
-    ctx.closePath(); // chiude forma
-    ctx.stroke(); // DISEGNA :D
-}
-//=====================================================================================
 sliderX.addEventListener("input", (e) =>{
     disegna(e.target.value, sliderY.value, sliderZ.value);
 })
@@ -161,4 +142,32 @@ function CreaSfera (mesh){
         IndiceIniziale += subdivision + 1;
     }
     return mesh;
+}
+
+//=====================================================================================
+disegna(0, 0, 0);
+function disegna(x, y, z){
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+
+    var mesh = vertices.map(v => ({...v}));
+    rotateY(mesh, y);
+    rotateX(mesh, x);
+    rotateZ(mesh, z);  
+    
+    scaled = scala(mesh, dimension);
+
+    SpherePoints.length = 0;
+    SphereSpigoli.length = 0;
+    rounded = CreaSfera(scaled);
+    move(rounded, 300, 300, 300);
+
+    ctx.moveTo(SpherePoints[0].x, SpherePoints[0].y); //setup inizio della forma
+    SphereSpigoli.forEach(([a,b]) => {
+        ctx.moveTo(SpherePoints[a].x, SpherePoints[a].y);
+        ctx.lineTo(SpherePoints[b].x, SpherePoints[b].y);
+    });
+    ctx.closePath(); // chiude forma
+    ctx.stroke(); // DISEGNA :D
 }
