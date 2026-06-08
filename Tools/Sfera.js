@@ -1,6 +1,11 @@
 import { initBuffers } from "./init-buffer.js";
 import { drawScene } from "./draw-scene.js";
 
+const sliderX = document.getElementById("sliderX");
+const sliderY = document.getElementById("sliderY");
+const sliderZ = document.getElementById("sliderZ");
+const sliderZoom = document.getElementById("sliderZoom");
+
 
 inizialize()
 //==============================================================================================================
@@ -17,17 +22,27 @@ function inizialize(){
   let lastMouseY = 0;
   let rotationY = 0;
   let rotationX = 0;
-  let zoom = -6.0; // stesso valore z del translate iniziale
+  let rotationZ = 0;
+  let zoom = -3.0; // stesso valore z del translate iniziale
   let lastPinchDistance = null;
  // --- inizialize program ------------------------------------------------------------------------------------------
   const canvas = document.getElementById("myCanvas");
   const gl = canvas.getContext("webgl");
   // loading world texture
   // ! the path is from the index
-  const Texture = loadTexture(gl, "./Tools/Textures/Untitled_Artwork.png");
-   
+  const Texture = loadTexture(gl, "./Tools/Textures/Mappamondo.png");
+  // --- Inizialize Sliders -----------------------------------------------------------------------------------------
+  sliderX.oninput = function(){  rotationX = this.value;  }
+  sliderY.oninput = function(){  rotationY = this.value;  }
+  sliderZ.oninput = function(){  rotationZ = this.value;  }
+  sliderZoom.oninput = function(){  zoom = 0 - this.value;}; // limit min/max  }
   // --- Mouse rotation ---------------------------------------------------------------------------------------------
-  canvas.addEventListener("mousedown", (e) => {   isDragging = true;   }); // check if mouse is dragging
+  canvas.addEventListener("mousedown", (e) => {   
+    isDragging = true;
+    console.log(rotationX, rotationY, rotationZ, zoom)
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+  }); // check if mouse is dragging
 
   canvas.addEventListener("mousemove", (e) => { // change rotation
       if (!isDragging) return;
@@ -42,7 +57,7 @@ function inizialize(){
   
   canvas.addEventListener("wheel", (e) => {
       zoom += e.deltaY * -0.01;
-      zoom = Math.max(-20.0, Math.min(-2.0, zoom)); // limiti min/max
+      zoom = Math.max(-20.0, Math.min(-2.0, zoom)); // limit min/max
       e.preventDefault();
   }, { passive: false });
 
@@ -55,7 +70,7 @@ function inizialize(){
   canvas.addEventListener("touchmove", (e) => {// change rotation
       if (!isDragging) return;
 
-      if (e.touches.length === 2){ // che if is doing a pinch
+      if (e.touches.length === 2){ // check if is doing a pinch
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -97,9 +112,9 @@ function inizialize(){
 
       // Apply lighting effect
 
-      highp vec3 ambientLight = vec3(0.30, 0.30, 0.30);
-      highp vec3 directionalLightColor = vec3(1.0, 1.0, 1.0);
-      highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
+      highp vec3 ambientLight = vec3(0.20, 0.42, 0.60);
+      highp vec3 directionalLightColor = vec3(1.0, 1.0, 0.50);
+      highp vec3 directionalVector = normalize(vec3(0.50, 1.0, 1.0));
 
       highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
 
@@ -147,10 +162,11 @@ function inizialize(){
 
     // Draw the scene repeatedly (necessary for wiating the texture to load and for update rotation)
     function render(now) {
-      drawScene(gl, programInfo, buffers, rotationX, rotationY, zoom, Texture);
+      drawScene(gl, programInfo, buffers, rotationX, rotationY, rotationZ, zoom, Texture);
       requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
+
 }
 //==============================================================================================================
 // Initialize the shader program, so WebGL knows how to draw our data
@@ -187,7 +203,7 @@ function loadShader(gl, type, source) {
 }
 //==============================================================================================================
 function loadTexture(gl, url) {
-  const texture = gl.createTexture();
+   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   const image = new Image();

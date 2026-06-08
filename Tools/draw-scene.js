@@ -1,6 +1,6 @@
 import { mat4 } from 'https://cdn.jsdelivr.net/npm/gl-matrix@3.4.3/esm/index.js';
 
-function drawScene(gl, programInfo, buffers, rotationX, rotationY, zoom, Texture) {
+function drawScene(gl, programInfo, buffers, rotationX, rotationY, rotationZ, zoom, Texture) {
     gl.clearColor(0.10, 0.32, 0.50, 1.0); // Clear to fully opaque background color
     gl.clearDepth(1.0); // Clear everything
     gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -32,7 +32,7 @@ function drawScene(gl, programInfo, buffers, rotationX, rotationY, zoom, Texture
 
     mat4.rotate(modelViewMatrix, modelViewMatrix, rotationY, [0, 1, 0]); // Y axis
     mat4.rotate(modelViewMatrix, modelViewMatrix, rotationX, [1, 0, 0]); // X axis 
-    mat4.rotate(modelViewMatrix, modelViewMatrix, 0, [0, 0, 1]); // Z axis
+    mat4.rotate(modelViewMatrix, modelViewMatrix, rotationZ, [0, 0, 1]); // Z axis
     
     const normalMatrix = mat4.create();
     mat4.invert(normalMatrix, modelViewMatrix);
