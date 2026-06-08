@@ -3,9 +3,9 @@ import { drawScene } from "./draw-scene.js";
 
 let Rotation = 90 * 0.01745329; // in radiant, first factor is degrees
 let deltaTime = 0;
-let HasToAutoRotate = false;
+let HasToAutoRotate = true;
 let AutoRotationSpeed = 0.001;
-let subdivisions = 16; 
+let subdivisions = 64; 
 
 inizialize()
 //==============================================================================================================
@@ -40,8 +40,8 @@ function inizialize(){
 
       // Apply lighting effect
 
-      highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
-      highp vec3 directionalLightColor = vec3(1, 1, 1);
+      highp vec3 ambientLight = vec3(0.30, 0.30, 0.30);
+      highp vec3 directionalLightColor = vec3(1.0, 1.0, 1.0);
       highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
 
       highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
@@ -59,7 +59,7 @@ function inizialize(){
     uniform sampler2D uSampler;
 
     void main(void) {
-      highp vec4 texelColor = vec4(0.8, 0.4, 0.2, 1.0);
+      highp vec4 texelColor = vec4(1.0, 1.0, 1.0, 1.0);
 
       gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
     }

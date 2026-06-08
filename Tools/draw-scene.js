@@ -80,7 +80,7 @@ function drawScene(gl, programInfo, buffers, Rotation) {
     );
 
     {
-        const vertexCount = 36;
+        const vertexCount = buffers.vertexCount;
         const type = gl.UNSIGNED_SHORT;
         const offset = 0;
         gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
