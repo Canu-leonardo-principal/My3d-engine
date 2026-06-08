@@ -32,26 +32,26 @@ function buildSphere(subdivisions) {
   const texCoords = [];
   const indices = [];
 
-  for (let lat = 0; lat <= subdivisions; lat++) {
-    const theta = (lat * Math.PI) / subdivisions;
+  for (let i = 0; i <= subdivisions; i++) {
+    const theta = (i * Math.PI) / subdivisions;
     const sinTheta = Math.sin(theta);
     const cosTheta = Math.cos(theta);
 
-    for (let lon = 0; lon <= subdivisions; lon++) {
-      const phi = (lon * 2 * Math.PI) / subdivisions;
+    for (let j = 0; j <= subdivisions; j++) {
+      const phi = (j * 2 * Math.PI) / subdivisions;
       const x = Math.cos(phi) * sinTheta;
       const y = cosTheta;
       const z = Math.sin(phi) * sinTheta;
 
       positions.push(x, y, z);
       normals.push(x, y, z);
-      texCoords.push(lon / subdivisions, lat / subdivisions);
+      texCoords.push(j / subdivisions, i / subdivisions);
     }
   }
 
-  for (let lat = 0; lat < subdivisions; lat++) {
-    for (let lon = 0; lon < subdivisions; lon++) {
-      const first  = lat * (subdivisions + 1) + lon;
+  for (let i = 0; i < subdivisions; i++) {
+    for (let j = 0; j < subdivisions; j++) {
+      const first  = i * (subdivisions + 1) + j;
       const second = first + subdivisions + 1;
       indices.push(first,     second,     first + 1);
       indices.push(second,    second + 1, first + 1);
