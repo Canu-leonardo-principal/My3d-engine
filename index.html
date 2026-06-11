@@ -6,12 +6,17 @@
     <title>Document</title>
 </head>
 <body >
-    <canvas id="myCanvas" width="700" height="700" style="border:1px solid grey"></canvas>
+    <canvas id="myCanvas" style="border:1px solid grey; 
+                                    width: 80%; 
+                                    height: 80vh; 
+                                    display: block;
+                                    background-image: url('./Tools/Textures/back.png');">
+    </canvas>
     <br>
-    X<input id="sliderX"  type="range" min ="0" max="14" value="0"> <br>
-    Y<input id="sliderY"  type="range" min ="0" max="14" value="0"> <br>
-    Z<input id="sliderZ"  type="range" min ="0" max="14" value="0"> <br>
-    Zoom<input id="sliderZoom"  type="range" min ="2" max="20" value="0"> <br>
+    <div id="poi-panel">
+    <h3>Punti di interesse</h3>
+    <div id="poi-container"></div>
+</div>
     <script type="module" src="./Tools/Sfera.js"></script> 
 </body>
 </html>
